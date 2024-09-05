@@ -20,7 +20,7 @@
         if (response.status >= 300) {
             return alert('There was a problem changing your password')
         }
-
+        alert('Your password has been successfully saved!')
         goto('/')
     }
 </script>
@@ -36,7 +36,7 @@
         </div>
         <div class="input">
             <label for="password2">Re-enter Password</label> <br>
-            <input type="password2" name="password2" id="password2" required />
+            <input type="password" name="password2" id="password2" required />
         </div>
         <input type="submit" value="Change Password">
     </form>

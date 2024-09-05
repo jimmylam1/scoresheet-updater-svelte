@@ -7,7 +7,7 @@ export async function POST({ request, cookies }) {
     const sessionId = cookies.get('sessionId')
 
     const result = await userCollection.findOne({ 'sessions.sessionId': sessionId })
-    if (!result || compareSync(currentPassword, result.passwordHash))
+    if (!result || !compareSync(currentPassword, result.passwordHash))
         return error(401, `Not logged in`)
 
     try {

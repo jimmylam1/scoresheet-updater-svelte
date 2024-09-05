@@ -23,11 +23,16 @@
     function toggleNav() {
         showNav = !showNav
     }
+    function closeNav() {
+        showNav = false
+    }
 
     function gotoAdminPage() {
+        closeNav()
         goto('/admin')
     }
     function goHome() {
+        closeNav()
         goto('/')
     }
 
@@ -51,9 +56,9 @@
             <p>Account</p>
             <div class="nav-category-btn-wrapper">
                 {#if !$User?.isAdmin}
-                    <a href="/change_password" class="nav-enable-hover nav-category-btn">Change Password</a>
+                    <a href="/change_password" on:click={closeNav} class="nav-enable-hover nav-category-btn">Change Password</a>
                 {/if}
-                <a href="/change_spreadsheet" class="nav-enable-hover nav-category-btn">Change Spreadsheet</a>
+                <a href="/change_spreadsheet" on:click={closeNav} class="nav-enable-hover nav-category-btn">Change Spreadsheet</a>
             </div>
         </div>
         <button on:click={logout} id="nav-home-btn">Logout</button>
