@@ -39,3 +39,7 @@ export async function start() {
 		{ upsert: true }
 	).catch(e => console.error(`error adding settings to db ${e}`))
 }
+
+process.on('SIGINT', function(params) {
+	client.close()
+});
