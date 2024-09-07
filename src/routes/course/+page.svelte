@@ -20,6 +20,7 @@
     let brokenComboItemList = [0, 1, 2, 3, 4].map(i => ({ text: `${i}`, value: i, url: `` }))
     let showSuccessMessage = false
     let refresh = false // toggling between true/false will refresh the data with #key
+    let submitButtonText = 'Update Spreadsheet'
     let top
 
     onMount(() => {
@@ -40,6 +41,7 @@
         showSuccessMessage = false
     }
     async function handleSubmit(event) {
+        submitButtonText = 'Updating...'
         const formData = new FormData(event.currentTarget)
         const data = {
             rowNum: course.rowNum,
@@ -71,6 +73,7 @@
 
         top.scrollIntoView() // scroll to top of page
         animateSuccessMessage()
+        submitButtonText = 'Update Spreadsheet'
         refresh = !refresh
     }
 </script>
@@ -80,7 +83,7 @@
     <div class="body">
         <ChangeCourse {index}/>
         <div class="top" bind:this={top}></div>
-        <div class="success-message {showSuccessMessage ? 'show' : 'hide'}">Submission successful!</div>
+        <div class="success-message {showSuccessMessage ? 'show' : 'hide'}">Successfully submitted!</div>
         <div class="main">
             <div class="cup-track br">
                 <CupAndTrack cupUrl={course.cupUrl} TrackUrl={course.trackUrl} trackName={course.trackName} />
@@ -119,7 +122,7 @@
                     <input name="notes" id="notes">
                 </div>
                 <div class="submit-btn-wrapper">
-                    <input class="button" type="submit" value="Update Spreadsheet" id="submit-btn">
+                    <input class="button" type="submit" value={submitButtonText} id="submit-btn">
                 </div>
             </div>
         </form>
