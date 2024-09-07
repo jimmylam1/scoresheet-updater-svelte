@@ -76,7 +76,7 @@
 </script>
 
 {#key (refresh)}
-{#if course.index}
+{#if course.trackName}
     <div class="body">
         <ChangeCourse {index}/>
         <div class="top" bind:this={top}></div>
