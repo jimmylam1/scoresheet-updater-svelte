@@ -12,8 +12,7 @@ export async function addSession(username, password) {
         const sessionId = hashSync(`${username}.${Math.random().toString()}`, 10)
         const session = {
             sessionId, 
-            expires: Date.now() + parseInt(MAX_SESSION_TIME),
-            selectedCourse: null
+            expires: Date.now() + parseInt(MAX_SESSION_TIME)
         }
         await userCollection.updateOne(query, {$push: { "sessions": session }})
         return sessionId

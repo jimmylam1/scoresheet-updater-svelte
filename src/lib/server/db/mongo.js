@@ -40,6 +40,6 @@ export async function start() {
 	).catch(e => console.error(`error adding settings to db ${e}`))
 }
 
-process.on('SIGINT', function(params) {
-	client.close()
+process.on('SIGINT', () => {
+	client.close().catch(e => console.error(`mongo.js client.close() ${e}`))
 });

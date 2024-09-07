@@ -12,13 +12,14 @@ export async function getCourses(spreadsheetId) {
         if (i % 3 === 0)
             cup = row[0]
         const indices = [1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 26, 22, 24, 20, 25]
-        courses.push(course(i+3, cup, ...indices.map(i => row[i])))
+        courses.push(course(i, i+3, cup, ...indices.map(i => row[i])))
     }
     return courses
 }
 
-function course(rowNum, cupName, trackName, driverName, driverLevel, driverPoints, kartName, kartLevel, kartPoints, gliderName, gliderLevel, gliderPoints, estScore, estAC, curScore, curAC, note) {
+function course(index, rowNum, cupName, trackName, driverName, driverLevel, driverPoints, kartName, kartLevel, kartPoints, gliderName, gliderLevel, gliderPoints, estScore, estAC, curScore, curAC, note) {
     return {
+        index,
         rowNum,
         cupName,
         cupUrl: getCupUrl(cupName),

@@ -1,6 +1,8 @@
 <script>
-    import { User } from '$lib/stores/user'
-    import { Courses } from '$lib/stores/courses'
+    import CreateAccount from './CreateAccount.svelte';
+    import { page } from '$app/stores';
+
+    let isCreateAccount = false
 
     async function handleSubmit(event) {
         const data = new FormData(event.currentTarget)
@@ -14,42 +16,31 @@
             body: JSON.stringify(payload),
         });
 
-        if (response.status < 300) {
-            refreshData()
-        }
-        else {
+        if (response.status >= 300)
             alert(`The username or password is incorrect`)
-        }
+
+        window.location.href = $page.url.pathname // goto() and invalidateAll() don't work...
     }
-
-    async function refreshData() {
-        const response = await fetch(`/api/user`)
-        const user = response.status < 300 ? await response.json() : null
-
-        if (user) {
-            User.set(user)
-            const response = await fetch(`/api/courses`)
-            if (response.status < 300) {
-                const courses = await response.json()
-                Courses.set(courses)
-            }
-        }
-    }
-
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-    <div class="input">
-        <label for="username">Username</label> <br>
-        <input type="text" name="username" id="username" required />
-    </div>
-    <div class="input">
-        <label for="password">Password</label> <br>
-        <input type="password" name="password" id="password" required />
-    </div>
-    <input type="submit" value="Login">
-</form>
-<a id="new-account" href="/create_account">Create a new account</a>
+{#if isCreateAccount}
+    <CreateAccount on:login={() => isCreateAccount = false} />
+{:else}
+    <form on:submit|preventDefault={handleSubmit}>
+        <div class="input">
+            <label for="username">Username</label> <br>
+            <input type="text" name="username" id="username" required />
+        </div>
+        <div class="input">
+            <label for="password">Password</label> <br>
+            <input type="password" name="password" id="password" required />
+        </div>
+        <input type="submit" value="Login">
+    </form>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <!-- svelte-ignore a11y-no-static-element-interactions -->
+    <a id="new-account" on:click={() => isCreateAccount = true}>Create a new account</a>
+{/if}
 
 <style>
     .input {
@@ -58,5 +49,10 @@
     #new-account {
         font-size: 0.8em;
         margin-top: 20px;
+        text-decoration: underline;
+        color: white;
+    }
+    #new-account:hover {
+        cursor: pointer;
     }
 </style>

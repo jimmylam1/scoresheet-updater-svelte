@@ -6,42 +6,32 @@
     import ChangeCourse from "$lib/components/course/ChangeCourse.svelte";
     import ItemSelect from "$lib/components/ItemSelect.svelte";
     import { sleep } from "$lib/utils/util"
-    import { User } from '$lib/stores/user'
     import { Courses } from '$lib/stores/courses'
     import { onMount } from "svelte";
 
-    export let trackName
-    export let TrackUrl
-    export let cupUrl
-    export let driverUrl
-    export let kartUrl
-    export let gliderUrl
-    export let curScore
-    export let estScore
-    export let curAc
-    export let estAc
-    export let driverIconUrl
-    export let frenzyList
-    export let singlesList
-    export let placementsList
-    export let showSuccess = false
+    export let data
 
-    let top
-    let frenzyItemList = frenzyList.map(i => ({ text: '', value: i, url: `/images/items/${i.replace("'", "%27")}.png` }))
-    let singlesItemList = singlesList.map(i => ({ text: '', value: i, url: `/images/singles/${i}.png` }))
-    let placementsItemList = placementsList.map(i => ({ text: '', value: i, url: `/images/placements/${i}.png` }))
+    // reactive statements ($:) run AFTER regular code
+    $: index = data.index
+    $: course = $Courses?.[index] || {}
+    $: frenzyItemList = course.frenzyList?.map(i => ({ text: '', value: i, url: `/images/items/${i.replace("'", "%27")}.png` })) || []
+    $: singlesItemList = course.singlesList?.map(i => ({ text: '', value: i, url: `/images/singles/${i}.png` })) || []
+    $: placementsItemList = course.placementsList?.map(i => ({ text: '', value: i, url: `/images/placements/${i}.png` })) || []
     let brokenComboItemList = [0, 1, 2, 3, 4].map(i => ({ text: `${i}`, value: i, url: `` }))
     let showSuccessMessage = false
+    let refresh = false // toggling between true/false will refresh the data with #key
+    let top
 
     onMount(() => {
-        top.scrollIntoView() // scroll to top of page
-        if (showSuccess)
-            animateSuccessMessage()
+        if (top)
+            top.scrollIntoView() // scroll to top of page
     })
 
-    frenzyItemList.unshift({text: 'None', value: '', url: ''})
-    if (singlesList.length > 0 && singlesList[0] === '')
-        singlesItemList[0] = {text: 'None', value: '', url: ''}
+    $: {
+        frenzyItemList.unshift({text: 'None', value: '', url: ''})
+        if (course.singlesList?.length > 0 && course.singlesList[0] === '')
+            singlesItemList[0] = {text: 'None', value: '', url: ''}
+    }
 
     async function animateSuccessMessage() {
         await sleep(100)
@@ -51,12 +41,6 @@
     }
     async function handleSubmit(event) {
         const formData = new FormData(event.currentTarget)
-        const sc = $User.selectedCourse
-        const courseIdx = $Courses.findIndex(i => i.cupName === sc.cupName && i.trackName === sc.trackName)
-        if (courseIdx < 0)
-            return alert('There was an issue finding the current course')
-        
-        const course = $Courses[courseIdx]
         const data = {
             rowNum: course.rowNum,
             curScore: parseInt(formData.get('score')),
@@ -79,40 +63,51 @@
             return alert(`There was an issue updating the spreadsheet`)
 
         Courses.update((c) => {
-            c[courseIdx].curScore = data.curScore
+            c[course.index].curScore = data.curScore
             if (data.curAc)
-                c[courseIdx].curAc = data.curAc
+                c[course.index].curAc = data.curAc
             return c
         })
+
+        top.scrollIntoView() // scroll to top of page
+        animateSuccessMessage()
+        refresh = !refresh
     }
 </script>
 
-{#key curScore}
+{#key (refresh)}
+{#if course.index}
     <div class="body">
-        <ChangeCourse />
+        <ChangeCourse {index}/>
         <div class="top" bind:this={top}></div>
         <div class="success-message {showSuccessMessage ? 'show' : 'hide'}">Submission successful!</div>
         <div class="main">
             <div class="cup-track br">
-                <CupAndTrack {cupUrl} {TrackUrl} {trackName} />
+                <CupAndTrack cupUrl={course.cupUrl} TrackUrl={course.trackUrl} trackName={course.trackName} />
             </div>
             <div class="dkg-wrapper br">
-                <DkgFrame url={driverUrl} />
-                <DkgFrame url={kartUrl} leftMargin />
-                <DkgFrame url={gliderUrl} leftMargin />
+                <DkgFrame url={course.driverUrl} />
+                <DkgFrame url={course.kartUrl} leftMargin />
+                <DkgFrame url={course.gliderUrl} leftMargin />
             </div>
             <div class="stats br">
-                <Stats {curScore} {estScore} {curAc} {estAc} {driverIconUrl} />
+                <Stats 
+                curScore={course.curScore} 
+                estScore={course.estScore} 
+                curAc={course.curAc} 
+                estAc={course.estAc} 
+                driverIconUrl={course.driverIconUrl} 
+            />
             </div>
         </div>
         <form class="main" on:submit|preventDefault={handleSubmit}>
             <div class="container">
-                <ScoreAcInput score={curScore} ac={curAc} />
+                <ScoreAcInput score={course.curScore} ac={course.curAc} />
                 <ItemSelect inputName="frenzy1" title="Frenzy 1" itemList={frenzyItemList} />
                 <ItemSelect inputName="frenzy2" title="Frenzy 2" itemList={frenzyItemList} />
                 <ItemSelect inputName="frenzy3" title="Frenzy 3" itemList={frenzyItemList} />
                 
-                {#if singlesList.length > 0}
+                {#if singlesItemList.length > 0}
                     <ItemSelect inputName="singles" title="Singles" itemList={singlesItemList} />
                 {/if}
 
@@ -129,6 +124,7 @@
             </div>
         </form>
     </div>
+{/if}
 {/key}
 
 <style>
@@ -231,3 +227,4 @@
         top: 0;
     }
 </style>
+

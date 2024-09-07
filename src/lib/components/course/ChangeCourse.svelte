@@ -1,34 +1,20 @@
 <script>
-    import { Courses } from '$lib/stores/courses'
-    import { User } from '$lib/stores/user'
+    import { goto } from '$app/navigation';
+
+    export let index
 
     function resetTrack() {
-        User.update((u) => {
-            u.selectedCourse = null
-            return u
-        })
+        goto('/')
     }
     function nextTrack(isRight) {
         function changeIdx(idx) {
+            idx = parseInt(idx)
             if (isRight)
                 return (idx+1) % 45
             return idx === 0 ? 44 : idx-1
         }
 
-        const courses = $Courses
-        const user = $User
-        if (!courses || !user)
-            return
-
-        const { cupName, trackName } = user.selectedCourse
-        let idx = courses.findIndex(i => i.cupName === cupName && i.trackName === trackName)
-        if (idx < 0)
-            return resetTrack()
-        idx = changeIdx(idx)
-        User.update((u) => {
-            u.selectedCourse = { cupName: courses[idx].cupName, trackName: courses[idx].trackName }
-            return u
-        })
+        goto(`/course?index=${changeIdx(index)}`)
     }
 </script>
 

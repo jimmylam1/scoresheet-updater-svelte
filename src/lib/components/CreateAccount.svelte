@@ -1,5 +1,7 @@
 <script>
-    import { goto } from '$app/navigation';
+    import { createEventDispatcher } from 'svelte';
+    
+    const dispatch = createEventDispatcher()
 
     async function handleSubmit(event) {
         const data = new FormData(event.currentTarget)
@@ -22,7 +24,7 @@
             return alert(`There was a problem creating your account: ${message}`)
         }
 
-        goto('/')
+        window.location.href = '/'
     }
 </script>
 
@@ -41,7 +43,9 @@
     </div>
     <input type="submit" value="Create Account">
 </form>
-<a id="login" href="/">Already have an account?</a>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<a id="login" on:click={() => dispatch('login')}>Already have an account?</a>
 
 <style>
     .input {
@@ -50,5 +54,10 @@
     #login {
         font-size: 0.8em;
         margin-top: 20px;
+        text-decoration: underline;
+        color: white;
+    }
+    #login:hover {
+        cursor: pointer;
     }
 </style>

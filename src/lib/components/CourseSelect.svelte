@@ -2,7 +2,7 @@
     import { createEventDispatcher } from "svelte";
     import { percent, roundToThousands, diff } from "$lib/utils/util"
     import { Courses } from '$lib/stores/courses'
-    import { User } from '$lib/stores/user'
+    import { goto } from '$app/navigation';
 
     const dispatch = createEventDispatcher()
 
@@ -57,10 +57,7 @@
         const courses = $Courses
         if (courses) {
             const course = courses.find(i => i.cupName === cupName && i.trackName === trackName)
-            User.update((u) => {
-                u.selectedCourse = { cupName: course.cupName, trackName: course.trackName }
-                return u
-            })
+            goto(`/course?index=${course.index}`)
         }
     }
 </script>

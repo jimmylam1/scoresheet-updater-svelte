@@ -2,8 +2,9 @@
     import { onDestroy } from 'svelte'
     import { User } from '$lib/stores/user'
     import { Courses } from '$lib/stores/courses'
-    import Navbar from "../lib/components/Navbar.svelte";
-    import { goto } from '$app/navigation';
+    import Navbar from "$lib/components/Navbar.svelte";
+    import { invalidateAll } from '$app/navigation';
+    import Login from '$lib/components/Login.svelte';
 
     export let data
 
@@ -13,20 +14,22 @@
     })
     onDestroy(unsubscribe)
 
-    function handleLogout() {
+    async function handleLogout() {
         User.set(null)
         Courses.set(null)
-        goto('/')
+        await invalidateAll()
     }
 </script>
-
 {#if user}
     <Navbar isAdmin={user.isAdmin} on:logout={handleLogout} />
+    <div class="body">
+        <slot />
+    </div>
+{:else}
+    <div class="body">
+        <Login />
+    </div>
 {/if}
-
-<div class="body">
-    <slot></slot>
-</div>
 
 <style>
     .body {

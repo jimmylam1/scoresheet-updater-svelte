@@ -40,6 +40,10 @@
 <WhiteMessageBox>
     On the spreadsheet, make sure to share the spreadsheet with the following email and give it edit access: {serviceEmail}
 </WhiteMessageBox>
+<br>
+<WhiteMessageBox>
+    Click <a href="https://docs.google.com/spreadsheets/d/1C2dR5pO1rcKlle62dPRb5MqCbbDDubKeT87A54N6w00/copy" target="_blank">here</a> to get a copy of the scoresheet if you don't have it already.
+</WhiteMessageBox>
 <form on:submit|preventDefault={handleSubmit}>
     <div class="input">
         <label for="spreadsheet">Spreadsheet Url</label> <br>

@@ -15,18 +15,5 @@ export async function load({ fetch }) {
             Courses.set(courses)
     }
 
-    User.subscribe(async (user) => {
-        if (!user)
-            return
-        const payload = {
-            selectedCourse: user.selectedCourse
-        }
-        await fetch(`/api/update_selected_course`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
-    })
-
 	return { user, courses }
 }

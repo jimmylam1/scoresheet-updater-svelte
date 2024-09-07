@@ -43,7 +43,7 @@
     <div class="body">
         <div class="container">
             <DarkBox>
-                <h3>Disable New Accounts</h3>
+                <h3>Allow New Accounts</h3>
                 <form on:submit|preventDefault={changeAllowNewAccounts}>
                     <div class="input">
                         <label>
