@@ -8,11 +8,13 @@ export async function addSession(username, password) {
     if (!result)
         return null
 
+    const expires = new Date()
+    expires.setTime(expires.getTime() + parseInt(MAX_SESSION_TIME))
     if (compareSync(password, result.passwordHash)) {
         const sessionId = hashSync(`${username}.${Math.random().toString()}`, 10)
         const session = {
             sessionId, 
-            expires: Date.now() + parseInt(MAX_SESSION_TIME)
+            expires
         }
         await userCollection.updateOne(query, {$push: { "sessions": session }})
         return sessionId
