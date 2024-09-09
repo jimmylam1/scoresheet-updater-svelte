@@ -1,5 +1,4 @@
 <script>
-    import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
     import WhiteMessageBox from '../../lib/components/WhiteMessageBox.svelte';
 
@@ -33,7 +32,7 @@
             return alert('There was a problem changing your spreadsheet')
         }
 
-        goto('/')
+        window.location.href = '/'
     }
 </script>
 

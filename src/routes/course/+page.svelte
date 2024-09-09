@@ -55,6 +55,8 @@
             fin: formData.get('placement'),
             broke: parseInt(formData.get('broke'))
         }
+        if (data.box?.driverSkill === 'Coin Box')
+            data.box = parseInt(data.box)
 
         const response = await fetch(`/api/update_course`, {
             method: 'POST',

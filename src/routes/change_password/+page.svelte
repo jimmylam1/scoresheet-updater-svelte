@@ -1,6 +1,4 @@
 <script>
-    import { goto } from '$app/navigation';
-
     async function handleSubmit(event) {
         const data = new FormData(event.currentTarget)
 
@@ -21,7 +19,7 @@
             return alert('There was a problem changing your password')
         }
         alert('Your password has been successfully saved!')
-        goto('/')
+        window.location.href = '/'
     }
 </script>
 

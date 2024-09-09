@@ -30,6 +30,7 @@ function course(index, rowNum, cupName, trackName, driverName, driverLevel, driv
         driverPoints: parseInt(driverPoints.replace(",", "")),
         driverIconUrl: getACItemIconPath(driverName),
         driverUrl: getDkgUrl(driverName, driverLevel, driverPoints.replace(",", ""), 'Driver'),
+        driverSkill: getDriverSkill(driverName),
         kartName,
         kartLevel: parseInt(kartLevel),
         kartPoints: parseInt(kartPoints),

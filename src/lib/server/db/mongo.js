@@ -12,9 +12,6 @@ export async function start() {
 	console.log('Starting mongo...')
 	await client.connect()
 
-	// create index to auto delete old sessions
-	userCollection.createIndex( { "sessions.expires": 1 }, { expireAfterSeconds: 0 } )
-
 	// insert root user
 	const rootUser = {
 		_id: ROOT_USERNAME,
@@ -38,6 +35,19 @@ export async function start() {
 		{ $setOnInsert: settings}, // only insert if not exists
 		{ upsert: true }
 	).catch(e => console.error(`error adding settings to db ${e}`))
+
+	deleteExpiredSessionsJob()
+}
+
+function deleteExpiredSessionsJob() {
+	// run once every 10 minutes
+	setInterval(() => {
+		const now = new Date()
+		userCollection.updateMany(
+            { 'sessions.expires': { $lt: now } },
+            { $pull: { 'sessions': { expires: { $lt: now } } } }
+        ).catch(e => console.error(`mongo.js deleteExpiredSessionsJob() ${e}`))
+	}, 600000);
 }
 
 process.on('SIGINT', () => {
