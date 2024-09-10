@@ -1,7 +1,6 @@
 <script>
     import { createEventDispatcher } from "svelte";
     import { goto } from '$app/navigation';
-    import { page } from '$app/stores';
     import { User } from '$lib/stores/user'
 
     const dispatch = createEventDispatcher()
@@ -31,14 +30,11 @@
         closeNav()
         goto('/admin')
     }
-    function goHome() {
-        closeNav()
-        goto('/')
-    }
 
 </script>
 
 <div id="header">
+    <a href="/"><img id="logo" src="/logo.png" alt="logo"></a>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
     <!-- svelte-ignore a11y-no-static-element-interactions -->
     <span id="nav-openbtn" on:click={toggleNav}>&#9776;</span>
@@ -46,9 +42,6 @@
         <!-- svelte-ignore a11y-click-events-have-key-events -->
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <span id="nav-closebtn" on:click={toggleNav}>&times;</span>
-        {#if $page.url.pathname !== '/'}
-            <button on:click={goHome}>Home</button>
-        {/if}
         {#if isAdmin}
             <button on:click={gotoAdminPage} id="nav-home-btn">Admin Page</button>
         {/if}
@@ -85,6 +78,12 @@
         align-items: center;
         font-family: system-ui;
         box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+    #logo {
+        height: 44px;
+        position: fixed;
+        top: 3px;
+        left: 5px;
     }
 
 @media only screen and (min-width: 501px) {
