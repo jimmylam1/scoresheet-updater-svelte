@@ -81,7 +81,7 @@
     }
     #logo {
         height: 44px;
-        position: fixed;
+        position: absolute;
         top: 3px;
         left: 5px;
     }

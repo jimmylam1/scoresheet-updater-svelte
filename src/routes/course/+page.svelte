@@ -35,7 +35,7 @@
     }
 
     async function animateSuccessMessage() {
-        await sleep(100)
+        await sleep(300)
         showSuccessMessage = true
         await sleep(3000)
         showSuccessMessage = false
@@ -55,7 +55,7 @@
             fin: formData.get('placement'),
             broke: parseInt(formData.get('broke'))
         }
-        if (data.box?.driverSkill === 'Coin Box')
+        if (data.box && course.driverSkill === 'Coin Box')
             data.box = parseInt(data.box)
 
         const response = await fetch(`/api/update_course`, {
