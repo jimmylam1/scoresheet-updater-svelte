@@ -43,7 +43,7 @@
         <!-- svelte-ignore a11y-no-static-element-interactions -->
         <span id="nav-closebtn" on:click={toggleNav}>&times;</span>
         {#if isAdmin}
-            <button on:click={gotoAdminPage} id="nav-home-btn">Admin Page</button>
+            <button on:click={gotoAdminPage} class="nav-btn">Admin Page</button>
         {/if}
         <div class="nav-category nav-top-border">
             <p>Account</p>
@@ -54,7 +54,7 @@
                 <a href="/change_spreadsheet" on:click={closeNav} class="nav-enable-hover nav-category-btn">Change Spreadsheet</a>
             </div>
         </div>
-        <button on:click={logout} id="nav-home-btn">Logout</button>
+        <button on:click={logout} id="logout" class="nav-btn">Logout</button>
     </div>
 </div>
 
@@ -84,6 +84,9 @@
         position: absolute;
         top: 3px;
         left: 5px;
+    }
+    #logout {
+        color: red !important;
     }
 
 @media only screen and (min-width: 501px) {
@@ -118,7 +121,7 @@
         font-family: inherit;
         margin: 0;
     }
-    #nav-home-btn {
+    .nav-btn {
         /* color: white !important; */
         padding: 16px 20px;
     }
