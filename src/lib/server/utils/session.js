@@ -21,3 +21,16 @@ export async function addSession(username, password) {
     }
     return null
 }
+
+export async function updateSessionExpiration(sessionId) {
+    const expires = new Date()
+    expires.setTime(expires.getTime() + parseInt(MAX_SESSION_TIME))
+
+    const result = await userCollection.updateOne(
+        { "sessions.sessionId": sessionId },
+        { $set: {
+            "sessions.$.expires": expires
+        }}
+    ).catch(e => console.error(`session.js updateSessionExpiration() ${e}`)) 
+    // console.log(`Matched ${result.matchedCount}, modified ${result.modifiedCount}`)
+}

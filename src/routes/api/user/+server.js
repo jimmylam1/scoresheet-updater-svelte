@@ -3,6 +3,7 @@ import { error, json } from '@sveltejs/kit'
 import { hashSync } from "bcrypt"
 import { addSession } from "$lib/server/utils/session.js";
 import { ROOT_USERNAME } from '$env/static/private'
+import { updateSessionExpiration } from '../../../lib/server/utils/session.js';
 
 // get current user or null if not authenticated
 export async function GET({ cookies }) {
@@ -11,11 +12,11 @@ export async function GET({ cookies }) {
     if (result) {
         const res = {
             username: result._id,
-            selectedCourse: result.sessions.find(i => i.sessionId === cookies.get('sessionId')).selectedCourse,
             spreadsheetId: result.spreadsheetId || null
         }
         if (result._id === ROOT_USERNAME)
             res.isAdmin = true
+        updateSessionExpiration(cookies.get('sessionId'))
         return json(res)
     }
     cookies.delete('sessionId', { path: '/' });

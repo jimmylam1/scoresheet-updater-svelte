@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit'
 import { updateCourse } from '$lib/server/utils/courses.js'
 import { userCollection } from '$lib/server/db/mongo.js'
+import { updateSessionExpiration } from '$lib/server/utils/session.js'
 
 export async function POST({request, cookies }) {
     const sessionId = cookies.get('sessionId')
@@ -15,6 +16,7 @@ export async function POST({request, cookies }) {
     try {
         const { rowNum, curScore, curAc, note, frenzy1, frenzy2, frenzy3, box, fin, broke } = await request.json()
         await updateCourse(result.spreadsheetId, rowNum, frenzy1, frenzy2, frenzy3, box, fin, broke, curAc, curScore, note)
+        updateSessionExpiration(cookies.get('sessionId'))
         return json('OK')
     } catch(e) {
         return error(500, 'Incorrect body sent')
