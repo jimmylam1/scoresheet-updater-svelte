@@ -54,6 +54,12 @@
                 <a href="/change_spreadsheet" on:click={closeNav} class="nav-enable-hover nav-category-btn">Change Spreadsheet</a>
             </div>
         </div>
+        <div class="nav-category nav-top-border">
+            <p>Download</p>
+            <div class="nav-category-btn-wrapper">
+                <a href="/highscore_image" on:click={closeNav} class="nav-enable-hover nav-category-btn">Highscore Image</a>
+            </div>
+        </div>
         <button on:click={logout} id="logout" class="nav-btn">Logout</button>
     </div>
 </div>
