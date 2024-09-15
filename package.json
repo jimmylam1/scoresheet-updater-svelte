@@ -18,7 +18,9 @@
 	"type": "module",
 	"dependencies": {
 		"bcrypt": "^5.1.1",
+		"canvas": "^2.11.2",
 		"googleapis": "^143.0.0",
-		"mongodb": "^6.8.0"
+		"mongodb": "^6.8.0",
+		"pdfjs-dist": "^4.6.82"
 	}
 }
