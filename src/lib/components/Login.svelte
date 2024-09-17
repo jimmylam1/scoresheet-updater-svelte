@@ -16,8 +16,10 @@
             body: JSON.stringify(payload),
         });
 
-        if (response.status >= 300)
-            alert(`The username or password is incorrect`)
+        if (response.status >= 300) {
+            const json = await response.json()
+            alert(json.message || 'Login failed')
+        }
 
         window.location.href = $page.url.pathname // goto() and invalidateAll() don't work...
     }

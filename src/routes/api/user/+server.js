@@ -12,10 +12,10 @@ export async function GET({ cookies }) {
     if (result) {
         const res = {
             username: result._id,
-            spreadsheetId: result.spreadsheetId || null
+            spreadsheetId: result.spreadsheetId || null,
+            isAdmin: result._id === ROOT_USERNAME,
+            sessionsCount: result.sessions.length
         }
-        if (result._id === ROOT_USERNAME)
-            res.isAdmin = true
         updateSessionExpiration(cookies.get('sessionId'))
         return json(res)
     }
@@ -41,9 +41,10 @@ export async function POST({ request, cookies }) {
     const res = await userCollection.insertOne(user).catch(e => console.error(`/api/user POST insert ${e}`))
     if (!res)
         return error(500, "User already exists")
-    const sessionId = await addSession(username, password).catch(e => console.error(`/api/user POST session ${e}`))
+
+    const { sessionId } = await addSession(username, password)
     if (!sessionId)
-        return error(401, "Unable to create session")
+        return error(500, "Unable to create session")
     cookies.set('sessionId', sessionId, { path: '/' });
     return json('OK')
 }
