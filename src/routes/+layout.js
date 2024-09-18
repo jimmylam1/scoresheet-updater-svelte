@@ -15,5 +15,9 @@ export async function load({ fetch }) {
             Courses.set(courses)
     }
 
-	return { user, courses }
+    const recaptchaResponse = await fetch('/api/recaptcha_sitekey')
+    const recaptchaJson = recaptchaResponse.status < 300 ? await recaptchaResponse.json() : null
+    const recaptcha = recaptchaJson.recaptcha
+
+	return { user, courses, recaptcha }
 }

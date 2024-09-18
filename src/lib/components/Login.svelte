@@ -1,6 +1,7 @@
 <script>
     import CreateAccount from './CreateAccount.svelte';
     import { page } from '$app/stores';
+    import Recaptcha from './Recaptcha.svelte';
 
     let isCreateAccount = false
 
@@ -8,8 +9,11 @@
         const data = new FormData(event.currentTarget)
         const payload = {
             username: data.get('username'),
-            password: data.get('password')
+            password: data.get('password'),
+            recaptchaResponse: data.get('g-recaptcha-response')
         }
+        if (!payload.recaptchaResponse)
+            return alert('You need to verify with Recaptcha!')
         const response = await fetch(`/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -18,7 +22,7 @@
 
         if (response.status >= 300) {
             const json = await response.json()
-            alert(json.message || 'Login failed')
+            return alert(json.message || 'Login failed')
         }
 
         window.location.href = $page.url.pathname // goto() and invalidateAll() don't work...
@@ -37,6 +41,7 @@
             <label for="password">Password</label> <br>
             <input type="password" name="password" id="password" required />
         </div>
+        <Recaptcha />
         <input type="submit" value="Login">
     </form>
     <!-- svelte-ignore a11y-click-events-have-key-events -->

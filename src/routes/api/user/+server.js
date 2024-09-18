@@ -3,7 +3,8 @@ import { error, json } from '@sveltejs/kit'
 import { hashSync } from "bcrypt"
 import { addSession } from "$lib/server/utils/session.js";
 import { ROOT_USERNAME } from '$env/static/private'
-import { updateSessionExpiration } from '../../../lib/server/utils/session.js';
+import { updateSessionExpiration } from '$lib/server/utils/session.js';
+import { verifyRecaptcha } from "$lib/server/utils/verifyRecaptcha.js";
 
 // get current user or null if not authenticated
 export async function GET({ cookies }) {
@@ -25,13 +26,17 @@ export async function GET({ cookies }) {
 
 // create a new user
 export async function POST({ request, cookies }) {
+    const { username, password, recaptchaResponse } = await request.json()
+    const success = await verifyRecaptcha(recaptchaResponse).catch(e => console.error(`/api/user POST recaptcha failed ${e}`))
+    if (!success)
+        return error(500, `Recaptcha failed`)
+
     // check if new users can be added first before adding
     const query = { _id: 'settings' }
     const settings = await settingsCollection.findOne(query)
     if (!settings?.canCreateAccounts)
         return error(503, `Unable to create new users at this time`)
 
-    const { username, password } = await request.json()
     const user = {
 		_id: username,
 		passwordHash: hashSync(password, 10),

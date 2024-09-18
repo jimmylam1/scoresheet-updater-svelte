@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+    import Recaptcha from './Recaptcha.svelte';
     
     const dispatch = createEventDispatcher()
 
@@ -11,8 +12,12 @@
 
         const payload = {
             username: data.get('username'),
-            password: data.get('password')
+            password: data.get('password'),
+            recaptchaResponse: data.get('g-recaptcha-response')
         }
+        if (!payload.recaptchaResponse)
+            return alert('You need to verify with Recaptcha!')
+        
         const response = await fetch(`/api/user`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -41,6 +46,7 @@
         <label for="password2">Re-enter Password</label> <br>
         <input type="password" name="password2" id="password2" required />
     </div>
+    <Recaptcha />
     <input type="submit" value="Create Account">
 </form>
 <!-- svelte-ignore a11y-click-events-have-key-events -->
